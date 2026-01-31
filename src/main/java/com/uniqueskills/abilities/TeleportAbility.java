@@ -340,11 +340,11 @@ public class TeleportAbility {
                 }
 
                 if (decay <= 0.001) {
+                    // Do nothing
                 } else {
                     Vector currentVelocity = initialDirection.clone().multiply(decay);
 
                     Location nextLoc = currentLocation.clone().add(currentVelocity);
-                    Vector moveDir = currentVelocity.clone();
 
                     if (nextLoc.getBlock().getType().isSolid()) {
                         boolean found = false;
@@ -357,7 +357,6 @@ public class TeleportAbility {
 
                             if (!testLoc.getBlock().getType().isSolid()) {
                                 nextLoc = testLoc;
-                                moveDir = rotated;
                                 found = true;
                                 break;
                             }

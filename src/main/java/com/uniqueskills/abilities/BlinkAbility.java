@@ -52,7 +52,7 @@ public class BlinkAbility {
                         continue;
 
                     boolean wasInAir = isInAir.getOrDefault(uuid, false);
-                    boolean currentlyOnGround = player.isOnGround();
+                    boolean currentlyOnGround = isPlayerOnGround(player);
 
                     // Detect landing
                     if (wasInAir && currentlyOnGround) {
@@ -175,5 +175,10 @@ public class BlinkAbility {
                 ticks++;
             }
         }.runTaskTimer(plugin, 0L, 1L);
+    }
+
+    private boolean isPlayerOnGround(Player player) {
+        // Check block slightly below the player's feet to detect ground
+        return player.getLocation().subtract(0, 0.1, 0).getBlock().getType().isSolid();
     }
 }

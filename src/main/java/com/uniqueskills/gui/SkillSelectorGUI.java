@@ -116,6 +116,7 @@ public class SkillSelectorGUI implements Listener {
     }
 
     @EventHandler
+    @SuppressWarnings("deprecation")
     public void onInventoryClick(InventoryClickEvent event) {
         if (!event.getView().getTitle().equals(GUI_TITLE)) {
             return;
@@ -137,9 +138,10 @@ public class SkillSelectorGUI implements Listener {
 
         if (clickedItem.getType() == Material.FEATHER) {
             // Select Blink
-            blast.setEnabled(player, false);
-            teleport.setEnabled(player, false);
+            blast.cleanup(player.getUniqueId());
+            teleport.cleanup(player.getUniqueId());
             if (!blink.isEnabled(player)) {
+                blink.cleanup(player.getUniqueId()); // clean state
                 blink.setEnabled(player, true);
                 player.sendMessage("§b§l[Blink] §aAbility selected!");
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
@@ -148,9 +150,10 @@ public class SkillSelectorGUI implements Listener {
 
         } else if (clickedItem.getType() == Material.TNT_MINECART) {
             // Select Blast
-            blink.setEnabled(player, false);
-            teleport.setEnabled(player, false);
+            blink.cleanup(player.getUniqueId());
+            teleport.cleanup(player.getUniqueId());
             if (!blast.isEnabled(player)) {
+                blast.cleanup(player.getUniqueId()); // clean state
                 blast.setEnabled(player, true);
                 player.sendMessage("§e§l[Blast] §aAbility selected!");
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
@@ -159,9 +162,10 @@ public class SkillSelectorGUI implements Listener {
 
         } else if (clickedItem.getType() == Material.ENDER_PEARL) {
             // Select Teleport
-            blink.setEnabled(player, false);
-            blast.setEnabled(player, false);
+            blink.cleanup(player.getUniqueId());
+            blast.cleanup(player.getUniqueId());
             if (!teleport.isEnabled(player)) {
+                teleport.cleanup(player.getUniqueId()); // clean state
                 teleport.setEnabled(player, true);
                 player.sendMessage("§9§l[Teleport] §aAbility selected!");
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
@@ -170,9 +174,9 @@ public class SkillSelectorGUI implements Listener {
 
         } else if (clickedItem.getType() == Material.BARRIER) {
             // Disable All
-            blink.setEnabled(player, false);
-            blast.setEnabled(player, false);
-            teleport.setEnabled(player, false);
+            blink.cleanup(player.getUniqueId());
+            blast.cleanup(player.getUniqueId());
+            teleport.cleanup(player.getUniqueId());
             player.sendMessage("§c§lAll abilities disabled.");
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 0.5f);
             player.closeInventory();
