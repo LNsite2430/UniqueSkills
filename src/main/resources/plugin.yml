@@ -1,0 +1,29 @@
+name: UniqueSkills
+version: '${version}'
+main: com.uniqueskills.UniqueSkillsPlugin
+api-version: '1.20'
+author: YourName
+description: Unique Skills - Blink, Blast, and Teleport abilities
+
+commands:
+  blink:
+    description: Toggle Blink ability
+    usage: /blink
+    aliases: [winddash, jdash]
+  blast:
+    description: Toggle Blast ability
+    usage: /blast
+    aliases: [explosivejump, rpack]
+  teleport:
+    description: Toggle Teleport ability
+    usage: /teleport
+    aliases: [enderrift, ytp]
+  uskills:
+    description: Open Skill Selection GUI
+    usage: /uskills
+    aliases: [dudeskills, ds]
+
+permissions:
+  valorantskills.use:
+    description: Allows use of skills
+    default: true
