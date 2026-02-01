@@ -65,27 +65,37 @@ public class DashAbility {
     private void updatePlayer(Player player) {
         UUID uuid = player.getUniqueId();
 
+        // --- Movement Check ---
+        // Check if player is moving horizontally
+        Vector vel = player.getVelocity();
+        boolean isMoving = Math.sqrt(vel.getX() * vel.getX() + vel.getZ() * vel.getZ()) > 0.05;
+        // Sprinting also counts as moving
+        if (player.isSprinting())
+            isMoving = true;
+
         // --- Dash Logic ---
         boolean currentlyDashing = isDashing.getOrDefault(uuid, false);
         double currentEnergy = energy.getOrDefault(uuid, MAX_ENERGY);
 
         if (currentlyDashing) {
-            // Consume Energy
+            // APPLY speed if energy > 0 (even if standing still)
             if (currentEnergy > 0) {
-                currentEnergy -= DASH_COST_PER_TICK;
-                if (currentEnergy < 0)
-                    currentEnergy = 0;
-                energy.put(uuid, currentEnergy);
-
-                // Apply Speed Effect (Short duration to effectively toggle)
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 5, 4, false, false, true));
 
-                // Particles
-                if (player.getTicksLived() % 3 == 0) {
-                    player.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, player.getLocation().add(0, 0.5, 0), 2,
-                            0.2, 0.2, 0.2, 0.05);
-                    player.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, player.getLocation().add(0, 0.5, 0), 1,
-                            0.2, 0.2, 0.2, 0.02);
+                // CONSUME energy only when moving
+                if (isMoving) {
+                    currentEnergy -= DASH_COST_PER_TICK;
+                    if (currentEnergy < 0)
+                        currentEnergy = 0;
+                    energy.put(uuid, currentEnergy);
+
+                    // Particles
+                    if (player.getTicksLived() % 3 == 0) {
+                        player.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, player.getLocation().add(0, 0.5, 0), 2,
+                                0.2, 0.2, 0.2, 0.05);
+                        player.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, player.getLocation().add(0, 0.5, 0),
+                                1, 0.2, 0.2, 0.2, 0.02);
+                    }
                 }
             }
 
@@ -94,7 +104,7 @@ public class DashAbility {
                 stopDash(player, true); // Force stop due to energy
             }
         } else {
-            // --- Regen Logic (Only when NOT dashing) ---
+            // --- Regen Logic (ONLY when dash mode is OFF) ---
             if (currentEnergy < MAX_ENERGY) {
                 boolean inDelay = false;
                 if (lastEmptyTime.containsKey(uuid)) {
@@ -280,15 +290,13 @@ public class DashAbility {
         Vector direction = player.getLocation().getDirection().clone();
         direction.setY(0).normalize();
 
-        // Play sounds
-        player.getWorld().playSound(player.getLocation(), Sound.BLOCK_SNOW_BREAK, 1.5f, 0.8f);
-        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PHANTOM_FLAP, 1.0f, 1.5f);
-        player.getWorld().playSound(player.getLocation(), Sound.ITEM_ELYTRA_FLYING, 0.8f, 1.8f);
+        // Play sounds - Shorter and snappier
+        player.getWorld().playSound(player.getLocation(), Sound.BLOCK_SNOW_BREAK, 1.0f, 1.2f);
+        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, 1.0f, 1.5f);
 
         // Apply slide with smoother velocity curve
         new BukkitRunnable() {
             int ticks = 0;
-            boolean playedMidSound = false;
 
             @Override
             public void run() {
@@ -308,13 +316,7 @@ public class DashAbility {
 
                 player.setVelocity(slideVelocity);
 
-                // Mid sound
-                if (!playedMidSound && ticks == SLIDE_DURATION_TICKS / 2) {
-                    player.getWorld().playSound(player.getLocation(), Sound.BLOCK_SNOW_STEP, 1.0f, 0.6f);
-                    playedMidSound = true;
-                }
-
-                // Particles
+                // Particles (ground trail) - smoother and more frequent
                 if (ticks % 2 == 0) {
                     player.getWorld().spawnParticle(Particle.ELECTRIC_SPARK,
                             player.getLocation().add(0, 0.1, 0), 8, 0.4, 0.05, 0.4, 0.08);
@@ -325,7 +327,6 @@ public class DashAbility {
                 }
 
                 if (ticks >= SLIDE_DURATION_TICKS) {
-                    player.getWorld().playSound(player.getLocation(), Sound.BLOCK_SNOW_BREAK, 0.8f, 1.2f);
                     this.cancel();
                 }
 
