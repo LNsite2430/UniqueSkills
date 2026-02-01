@@ -19,7 +19,7 @@ commands:
     usage: /teleport
     aliases: [enderrift, ytp]
   uskills:
-    description: Open Skill Selection GUI
+    description: Open the main GUI to select and manage special abilities (Blink, Blast, Teleport, Dash).
     usage: /uskills
     aliases: [dudeskills, ds]
   dash:
