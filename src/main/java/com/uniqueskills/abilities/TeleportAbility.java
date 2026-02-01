@@ -170,7 +170,27 @@ public class TeleportAbility {
             return;
         }
 
-        spawnBeacon(player);
+        if (player.isSneaking()) {
+            spawnBeaconOnSpot(player);
+        } else {
+            spawnBeacon(player);
+        }
+    }
+
+    private void spawnBeaconOnSpot(Player player) {
+        UUID uuid = player.getUniqueId();
+        Location startLoc = player.getLocation().add(0, 0.5, 0);
+        Vector direction = new Vector(0, 0, 0); // 速度0
+
+        GatecrashSession session = new GatecrashSession(uuid, startLoc, direction);
+        activeSessions.put(uuid, session);
+        session.runTaskTimer(plugin, 0L, 1L);
+
+        // Cooldown starts when ability ENDS (tp, fake, expire).
+        hasCharge.put(uuid, false);
+
+        // Play different sound for static placement
+        player.getWorld().playSound(player.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_SET_SPAWN, 1.0f, 2.0f);
     }
 
     private void spawnBeacon(Player player) {

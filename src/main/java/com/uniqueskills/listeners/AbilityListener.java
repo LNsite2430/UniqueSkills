@@ -3,6 +3,8 @@ package com.uniqueskills.listeners;
 import com.uniqueskills.abilities.BlinkAbility;
 import com.uniqueskills.abilities.BlastAbility;
 import com.uniqueskills.abilities.TeleportAbility;
+import com.uniqueskills.abilities.DashAbility;
+import com.uniqueskills.UniqueSkillsPlugin;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,39 +15,42 @@ import org.bukkit.inventory.ItemStack;
 
 public class AbilityListener implements Listener {
 
+    private final UniqueSkillsPlugin plugin;
     private final BlinkAbility blinkAbility;
     private final BlastAbility blastAbility;
     private final TeleportAbility teleportAbility;
+    private final DashAbility dashAbility;
 
-    public AbilityListener(BlinkAbility blinkAbility, BlastAbility blastAbility,
-            TeleportAbility teleportAbility) {
-        this.blinkAbility = blinkAbility;
-        this.blastAbility = blastAbility;
-        this.teleportAbility = teleportAbility;
+    public AbilityListener(UniqueSkillsPlugin plugin, BlinkAbility blink, BlastAbility blast, TeleportAbility teleport,
+            DashAbility dash) {
+        this.plugin = plugin;
+        this.blinkAbility = blink;
+        this.blastAbility = blast;
+        this.teleportAbility = teleport;
+        this.dashAbility = dash;
     }
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        Action action = event.getAction();
-
-        // Right click detection
-        if (action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK) {
+        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
 
+        Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
+
+        if (item == null)
+            return;
 
         // Blink - activated with Feather
         if (item.getType() == Material.FEATHER && blinkAbility.isEnabled(player)) {
-            event.setCancelled(true);
             blinkAbility.executeDash(player);
             return;
         }
 
         // Blast - activated with TNT Minecart
         if (item.getType() == Material.TNT_MINECART && blastAbility.isEnabled(player)) {
-            event.setCancelled(true);
+            event.setCancelled(true); // Prevent placing minecart
             blastAbility.executeBlastPack(player);
             return;
         }
@@ -56,6 +61,21 @@ public class AbilityListener implements Listener {
             teleportAbility.execute(player);
             return;
         }
+
+        // Dash - activated with Blaze Rod
+        if (item.getType() == Material.BLAZE_ROD && dashAbility.isEnabled(player)) {
+            event.setCancelled(true);
+            dashAbility.execute(player);
+            return;
+        }
+    }
+
+    @EventHandler
+    public void onPlayerToggleSneak(org.bukkit.event.player.PlayerToggleSneakEvent event) {
+        Player player = event.getPlayer();
+        if (event.isSneaking()) { // Only when starting to sneak
+            dashAbility.handleSneak(player);
+        }
     }
 
     @EventHandler
@@ -64,5 +84,6 @@ public class AbilityListener implements Listener {
         blinkAbility.cleanup(uuid);
         blastAbility.cleanup(uuid);
         teleportAbility.cleanup(uuid);
+        dashAbility.cleanup(uuid);
     }
 }

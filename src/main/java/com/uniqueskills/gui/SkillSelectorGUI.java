@@ -4,6 +4,7 @@ import com.uniqueskills.UniqueSkillsPlugin;
 import com.uniqueskills.abilities.BlinkAbility;
 import com.uniqueskills.abilities.BlastAbility;
 import com.uniqueskills.abilities.TeleportAbility;
+import com.uniqueskills.abilities.DashAbility;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -27,8 +28,9 @@ public class SkillSelectorGUI implements Listener {
         this.plugin = plugin;
     }
 
+    @SuppressWarnings("deprecation")
     public void openGUI(Player player) {
-        Inventory gui = Bukkit.createInventory(null, 9, GUI_TITLE);
+        Inventory gui = Bukkit.createInventory(null, 27, GUI_TITLE);
 
         // Blink Item
         ItemStack blinkItem = new ItemStack(Material.FEATHER);
@@ -38,12 +40,12 @@ public class SkillSelectorGUI implements Listener {
         blinkLore.add("§7Click to select Blink ability.");
         blinkLore.add("");
         blinkLore.add("§e[English]");
-        blinkLore.add("§7Dash forward instantly.");
-        blinkLore.add("§7Right-click with Feather to use.");
+        blinkLore.add("§7Dash forward with Feather.");
+        blinkLore.add("§72 charges, recharge when landing.");
         blinkLore.add("");
         blinkLore.add("§e[日本語]");
-        blinkLore.add("§7向いている方向に高速移動します。");
-        blinkLore.add("§7羽根を持って右クリックで発動。");
+        blinkLore.add("§7羽を持って前方にダッシュ。");
+        blinkLore.add("§72チャージ、着地で再チャージ。");
         blinkLore.add("");
         if (plugin.getBlinkAbility().isEnabled(player)) {
             blinkLore.add("§a§l[SELECTED]");
@@ -59,14 +61,12 @@ public class SkillSelectorGUI implements Listener {
         blastLore.add("§7Click to select Blast ability.");
         blastLore.add("");
         blastLore.add("§e[English]");
-        blastLore.add("§7Throw a blast pack to boost jump.");
-        blastLore.add("§7Right-click to throw, right-click again to detonate.");
-        blastLore.add("§7Stronger boost in mid-air!");
+        blastLore.add("§7Throw explosive pack with TNT Minecart.");
+        blastLore.add("§7Right-click again to detonate.");
         blastLore.add("");
         blastLore.add("§e[日本語]");
-        blastLore.add("§7爆発パックを使ってブーストジャンプします。");
-        blastLore.add("§7TNTトロッコを持って右クリックで投擲、再度右クリックで起爆。");
-        blastLore.add("§7空中での起爆はブースト力が大幅に強化されます！");
+        blastLore.add("§7TNTトロッコで爆破パックを投げる。");
+        blastLore.add("§7もう一度右クリックで起爆。");
         blastLore.add("");
         if (plugin.getBlastAbility().isEnabled(player)) {
             blastLore.add("§a§l[SELECTED]");
@@ -82,20 +82,39 @@ public class SkillSelectorGUI implements Listener {
         teleportLore.add("§7Click to select Teleport ability.");
         teleportLore.add("");
         teleportLore.add("§e[English]");
-        teleportLore.add("§7Send a moving beacon to teleport.");
-        teleportLore.add("§7Right-click to send, right-click again to teleport.");
-        teleportLore.add("§7Shift + Right-click for Fake Teleport.");
+        teleportLore.add("§7Place beacon with Ender Pearl, teleport to it.");
+        teleportLore.add("§7Shift+Right-click to place on spot or fake teleport.");
         teleportLore.add("");
         teleportLore.add("§e[日本語]");
-        teleportLore.add("§7壁沿いに進むビーコンを出してテレポートします。");
-        teleportLore.add("§7エンダーパールを持って右クリックで発射、再度右クリックでテレポート。");
-        teleportLore.add("§7スニーク + 右クリックでフェイクテレポートを発動できます。");
+        teleportLore.add("§7エンダーパールでビーコンを設置、そこへテレポート。");
+        teleportLore.add("§7Shift+右クリックでその場設置 or フェイクTP。");
         teleportLore.add("");
         if (plugin.getTeleportAbility().isEnabled(player)) {
             teleportLore.add("§a§l[SELECTED]");
         }
         teleportMeta.setLore(teleportLore);
         teleportItem.setItemMeta(teleportMeta);
+
+        // Dash Item
+        ItemStack dashItem = new ItemStack(Material.BLAZE_ROD);
+        ItemMeta dashMeta = dashItem.getItemMeta();
+        dashMeta.setDisplayName("§6§lDash");
+        List<String> dashLore = new ArrayList<>();
+        dashLore.add("§7Click to select Dash ability.");
+        dashLore.add("");
+        dashLore.add("§e[English]");
+        dashLore.add("§7Right-click to toggle run (drains energy).");
+        dashLore.add("§7Sneak while running to slide.");
+        dashLore.add("");
+        dashLore.add("§e[日本語]");
+        dashLore.add("§7右クリックで移動モード切り替え（エネルギー消費）。");
+        dashLore.add("§7走っている最中にスニークでスライド。");
+        dashLore.add("");
+        if (plugin.getDashAbility().isEnabled(player)) {
+            dashLore.add("§a§l[SELECTED]");
+        }
+        dashMeta.setLore(dashLore);
+        dashItem.setItemMeta(dashMeta);
 
         // Disable Item
         ItemStack disableItem = new ItemStack(Material.BARRIER);
@@ -106,11 +125,12 @@ public class SkillSelectorGUI implements Listener {
         disableMeta.setLore(disableLore);
         disableItem.setItemMeta(disableMeta);
 
-        // Place items
-        gui.setItem(1, blinkItem);
-        gui.setItem(3, blastItem);
-        gui.setItem(5, teleportItem);
-        gui.setItem(7, disableItem);
+        // Place items in a symmetric layout (row 2)
+        gui.setItem(10, blinkItem); // Left
+        gui.setItem(12, blastItem); // Center-left
+        gui.setItem(14, teleportItem); // Center-right
+        gui.setItem(16, dashItem); // Right
+        gui.setItem(22, disableItem); // Bottom center
 
         player.openInventory(gui);
     }
@@ -135,11 +155,13 @@ public class SkillSelectorGUI implements Listener {
         BlinkAbility blink = plugin.getBlinkAbility();
         BlastAbility blast = plugin.getBlastAbility();
         TeleportAbility teleport = plugin.getTeleportAbility();
+        DashAbility dash = plugin.getDashAbility();
 
         if (clickedItem.getType() == Material.FEATHER) {
             // Select Blink
             blast.cleanup(player.getUniqueId());
             teleport.cleanup(player.getUniqueId());
+            dash.cleanup(player.getUniqueId());
             if (!blink.isEnabled(player)) {
                 blink.cleanup(player.getUniqueId()); // clean state
                 blink.setEnabled(player, true);
@@ -152,6 +174,7 @@ public class SkillSelectorGUI implements Listener {
             // Select Blast
             blink.cleanup(player.getUniqueId());
             teleport.cleanup(player.getUniqueId());
+            dash.cleanup(player.getUniqueId());
             if (!blast.isEnabled(player)) {
                 blast.cleanup(player.getUniqueId()); // clean state
                 blast.setEnabled(player, true);
@@ -164,10 +187,24 @@ public class SkillSelectorGUI implements Listener {
             // Select Teleport
             blink.cleanup(player.getUniqueId());
             blast.cleanup(player.getUniqueId());
+            dash.cleanup(player.getUniqueId());
             if (!teleport.isEnabled(player)) {
                 teleport.cleanup(player.getUniqueId()); // clean state
                 teleport.setEnabled(player, true);
                 player.sendMessage("§9§l[Teleport] §aAbility selected!");
+                player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
+            }
+            player.closeInventory();
+
+        } else if (clickedItem.getType() == Material.BLAZE_ROD) {
+            // Select Dash
+            blink.cleanup(player.getUniqueId());
+            blast.cleanup(player.getUniqueId());
+            teleport.cleanup(player.getUniqueId());
+            if (!dash.isEnabled(player)) {
+                dash.cleanup(player.getUniqueId()); // clean state
+                dash.setEnabled(player, true);
+                player.sendMessage("§6§l[Dash] §aAbility selected!");
                 player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
             }
             player.closeInventory();
@@ -177,6 +214,7 @@ public class SkillSelectorGUI implements Listener {
             blink.cleanup(player.getUniqueId());
             blast.cleanup(player.getUniqueId());
             teleport.cleanup(player.getUniqueId());
+            dash.cleanup(player.getUniqueId());
             player.sendMessage("§c§lAll abilities disabled.");
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 0.5f);
             player.closeInventory();

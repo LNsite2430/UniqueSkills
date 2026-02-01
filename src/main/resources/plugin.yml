@@ -22,6 +22,10 @@ commands:
     description: Open Skill Selection GUI
     usage: /uskills
     aliases: [dudeskills, ds]
+  dash:
+    description: Toggle Dash ability
+    usage: / dash
+    aliases: [sprint, slide]
 
 permissions:
   valorantskills.use:
