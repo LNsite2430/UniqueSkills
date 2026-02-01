@@ -31,16 +31,15 @@ public class BlastCommand implements CommandExecutor {
             return true;
         }
 
-        boolean newState = !ability.isEnabled(player);
-
-        if (newState) {
-            // 他のアビリティを無効化
-            plugin.getBlinkAbility().setEnabled(player, false);
-            ability.setEnabled(player, true);
-            player.sendMessage("§e§l[Blast] §aBlast ability §aON §7(右クリックで投げる、再度右クリックで起爆)");
-        } else {
+        boolean current = ability.isEnabled(player);
+        if (current) {
             ability.setEnabled(player, false);
-            player.sendMessage("§e§l[Blast] §cBlast ability §cOFF");
+            player.sendMessage("§e§l[Blast] §cアビリティを OFF にしました。");
+        } else {
+            plugin.disableAllAbilities(player);
+            ability.setEnabled(player, true);
+            player.sendMessage("§e§l[Blast] §aアビリティを ON にしました。");
+            player.sendMessage("§7(TNT付きトロッコを持って右クリックで投擲)");
         }
 
         return true;

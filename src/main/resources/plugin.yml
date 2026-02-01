@@ -9,23 +9,19 @@ commands:
   blink:
     description: Toggle Blink ability
     usage: /blink
-    aliases: [winddash, jdash]
   blast:
     description: Toggle Blast ability
     usage: /blast
-    aliases: [explosivejump, rpack]
   teleport:
     description: Toggle Teleport ability
     usage: /teleport
-    aliases: [enderrift, ytp]
+  dash:
+    description: Toggle Dash ability
+    usage: /dash
   uskills:
     description: Open the main GUI to select and manage special abilities (Blink, Blast, Teleport, Dash).
     usage: /uskills
-    aliases: [dudeskills, ds]
-  dash:
-    description: Toggle Dash ability
-    usage: / dash
-    aliases: [sprint, slide]
+    aliases: [us]
 
 permissions:
   valorantskills.use:

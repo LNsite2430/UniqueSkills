@@ -28,7 +28,7 @@ public class SkillCommand implements CommandExecutor {
             player.sendMessage("§b§l§m-----§b§l  Unique Skills: ユーザーガイド  §b§l§m-----");
             player.sendMessage("§f ");
             player.sendMessage("§e§l1. スキルの選択方法");
-            player.sendMessage("§7§e /uskills §7(または /ds) を入力し、GUIからアイコンをクリックしてください。");
+            player.sendMessage("§7§e /uskills §7(または /us) を入力し、GUIからアイコンをクリックしてください。");
             player.sendMessage("§7一度に有効にできるアビリティは §b1つだけ §7です。");
             player.sendMessage("§f ");
             player.sendMessage("§e§l2. 使い方 (発動アイテム)");
@@ -39,10 +39,12 @@ public class SkillCommand implements CommandExecutor {
             player.sendMessage("§f - §6ダッシュ§7: §6ブレイズロッド §7を持って右クリック (ON/OFF切替)");
             player.sendMessage("§f     §7* ダッシュ中にスニークするとスライディングが発動します。");
             player.sendMessage("§f ");
-            player.sendMessage("§e§l3. 便利な機能");
-            player.sendMessage("§f - §e/uskills §7: 選択GUIを開く");
-            player.sendMessage("§f - §e/ds §7: メニューの略称");
-            player.sendMessage("§f - §e/[スキル名] §7: スキルをコマンドで直接ON/OFF");
+            player.sendMessage("§e§l3. 登録コマンドの一覧");
+            player.sendMessage("§f - §e/uskills §7: 選択GUIを開く (略称: /us)");
+            player.sendMessage("§f - §e/blink §7: ブリンクのON/OFF");
+            player.sendMessage("§f - §e/blast §7: ブラストパックのON/OFF");
+            player.sendMessage("§f - §e/teleport §7: テレポートのON/OFF");
+            player.sendMessage("§f - §e/dash §7: ダッシュのON/OFF");
             player.sendMessage("§b§l§m---------------------------------------");
             return true;
         }

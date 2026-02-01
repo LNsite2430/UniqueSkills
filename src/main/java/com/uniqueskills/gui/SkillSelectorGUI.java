@@ -168,39 +168,32 @@ public class SkillSelectorGUI implements Listener {
 
         if (clickedItem.getType() == Material.FEATHER) {
             boolean current = blink.isEnabled(player);
-            disableAll(player);
+            plugin.disableAllAbilities(player);
             blink.setEnabled(player, !current);
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
             openGUI(player);
         } else if (clickedItem.getType() == Material.TNT_MINECART) {
             boolean current = blast.isEnabled(player);
-            disableAll(player);
+            plugin.disableAllAbilities(player);
             blast.setEnabled(player, !current);
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
             openGUI(player);
         } else if (clickedItem.getType() == Material.ENDER_PEARL) {
             boolean current = teleport.isEnabled(player);
-            disableAll(player);
+            plugin.disableAllAbilities(player);
             teleport.setEnabled(player, !current);
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
             openGUI(player);
         } else if (clickedItem.getType() == Material.BLAZE_ROD) {
             boolean current = dash.isEnabled(player);
-            disableAll(player);
+            plugin.disableAllAbilities(player);
             dash.setEnabled(player, !current);
             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
             openGUI(player);
         } else if (clickedItem.getType() == Material.BARRIER) {
-            disableAll(player);
+            plugin.disableAllAbilities(player);
             player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.5f, 1f);
             openGUI(player);
         }
-    }
-
-    private void disableAll(Player player) {
-        plugin.getBlinkAbility().setEnabled(player, false);
-        plugin.getBlastAbility().setEnabled(player, false);
-        plugin.getTeleportAbility().setEnabled(player, false);
-        plugin.getDashAbility().setEnabled(player, false);
     }
 }

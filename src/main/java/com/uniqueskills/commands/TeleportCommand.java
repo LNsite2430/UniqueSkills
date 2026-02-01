@@ -31,17 +31,15 @@ public class TeleportCommand implements CommandExecutor {
             return true;
         }
 
-        boolean newState = !ability.isEnabled(player);
-
-        if (newState) {
-            // 他のアビリティを無効化
-            plugin.getBlinkAbility().setEnabled(player, false);
-            plugin.getBlastAbility().setEnabled(player, false);
-            ability.setEnabled(player, true);
-            player.sendMessage("§9§l[Teleport] §aTeleport ability §aON §7(右クリックでテレポート)");
-        } else {
+        boolean current = ability.isEnabled(player);
+        if (current) {
             ability.setEnabled(player, false);
-            player.sendMessage("§9§l[Teleport] §cTeleport ability §cOFF");
+            player.sendMessage("§9§l[Teleport] §cアビリティを OFF にしました。");
+        } else {
+            plugin.disableAllAbilities(player);
+            ability.setEnabled(player, true);
+            player.sendMessage("§9§l[Teleport] §aアビリティを ON にしました。");
+            player.sendMessage("§7(エンダーパールを持って右クリックで挙動開始)");
         }
 
         return true;

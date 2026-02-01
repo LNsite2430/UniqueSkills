@@ -37,7 +37,7 @@ public class UniqueSkillsPlugin extends JavaPlugin {
         getCommand("blink").setExecutor(new BlinkCommand(blinkAbility, this));
         getCommand("blast").setExecutor(new BlastCommand(blastAbility, this));
         getCommand("teleport").setExecutor(new TeleportCommand(teleportAbility, this));
-        getCommand("dash").setExecutor(new DashCommand(dashAbility));
+        getCommand("dash").setExecutor(new DashCommand(dashAbility, this));
 
         // Register Listeners
         getServer().getPluginManager()
@@ -63,6 +63,17 @@ public class UniqueSkillsPlugin extends JavaPlugin {
                 dashAbility.cleanup(uuid);
         }
         getLogger().info("UniqueSkills プラグインが無効化されました");
+    }
+
+    public void disableAllAbilities(org.bukkit.entity.Player player) {
+        if (blinkAbility != null)
+            blinkAbility.setEnabled(player, false);
+        if (blastAbility != null)
+            blastAbility.setEnabled(player, false);
+        if (teleportAbility != null)
+            teleportAbility.setEnabled(player, false);
+        if (dashAbility != null)
+            dashAbility.setEnabled(player, false);
     }
 
     public BlinkAbility getBlinkAbility() {
