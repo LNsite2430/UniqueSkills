@@ -32,6 +32,11 @@ public class AbilityListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
+        // Prevent double execution from both hands
+        if (event.getHand() == org.bukkit.inventory.EquipmentSlot.OFF_HAND) {
+            return;
+        }
+
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
@@ -39,7 +44,7 @@ public class AbilityListener implements Listener {
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        if (item == null)
+        if (item == null || item.getType() == Material.AIR)
             return;
 
         // Blink - activated with Feather
