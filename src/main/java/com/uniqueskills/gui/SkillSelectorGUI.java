@@ -122,7 +122,7 @@ public class SkillSelectorGUI implements Listener {
         ItemMeta infoMeta = infoItem.getItemMeta();
         infoMeta.setDisplayName("§6§l Unique Skills ヘルプ");
         List<String> infoLore = new ArrayList<>();
-        infoLore.add("§7現在のバージョン: §e1.0.25");
+        infoLore.add("§7現在のバージョン: §e1.0.26");
         infoLore.add("");
         infoLore.add("§f§l[ 使いかた ]");
         infoLore.add("§71. 下のアイコンをクリックしてスキルを有効化。");

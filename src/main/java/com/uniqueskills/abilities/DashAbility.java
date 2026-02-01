@@ -326,6 +326,11 @@ public class DashAbility {
                             player.getLocation().add(0, 0.05, 0), 2, 0.3, 0.02, 0.3, 0.01);
                 }
 
+                // Apply Speed 5 slightly before the slide ends for a smoother transition
+                if (ticks == SLIDE_DURATION_TICKS - 3) {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 25, 4, false, false, true));
+                }
+
                 if (ticks >= SLIDE_DURATION_TICKS) {
                     this.cancel();
                 }
